@@ -1,0 +1,15 @@
+OCamlscript is a tool which compiles OCaml scripts into native code,
+thus combining mthe flexibility of scripts and the speed provided by
+ocamlopt.
+
+Ocamlopt 2 is work in progress. An ocamlscript script contains 2
+sections: the first section specifies compilation options and
+libraries to load, while the second section is the OCaml program.
+
+Examples are given in the "examples" subdirectory.
+
+Installation: see INSTALL file
+Documentation: http://ocaml.pbwiki.com/Ocamlscript
+Primary download site: http://martin.jambon.free.fr/ocaml.html#ocamlscript
+Authors: David Mentré and Martin Jambon
+Contact: Martin Jambon <martin_jambon@emailuser.net>

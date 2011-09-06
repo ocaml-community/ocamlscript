@@ -1,0 +1,36 @@
+                 Ocamlscript version 1.99
+                 ========================
+
+Disclaimer:
+----------
+This is a preview release of ocamlscript 2. It is provided for curious
+programmers who are interested in testing the new system. Several
+incompatible changes might take place between this pre-release and
+the 2.0 release line. Be ready to adapt the header of your scripts
+when you upgrade!
+
+
+Installation:
+------------
+
+Requirements: 
+  * OCaml version 3.08.x or 3.09.x, 
+  * GNU make, 
+  * Findlib (ocamlfind)
+
+This version has been developed on Linux and will probably not work on the
+Win32 port of OCaml, and maybe others. Any help to make that work is
+appreciated.
+
+Compilation:
+  make
+
+Installation:
+  make install
+
+Uninstallation:
+  make uninstall
+
+Examples are available in the "examples" subdirectory.
+
+For more information on ocamlscript, see the README file

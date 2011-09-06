@@ -1,0 +1,57 @@
+This directory contains a few examples that should work on every platform 
+where ocamlscript can be installed, except hello-web.ml which requires
+the ocamlnet library.
+
+One attractive feature on Unix-like systems is auto-executable
+scripts, i.e. scripts that start with a shebang (#!) line. 
+The interpretation of this line is OS-dependent, so we avoid using it
+in most examples.
+
+* factorial.ml: computes the exact factorial of integers using the num library.
+                Run it with: ocamlscript factorial.ml
+                         or: ocamlscript factorial.ml 123
+
+* with-includes.ml: 
+                this program shows how to use other source file(s) than the
+		main script.
+		Run it with: ocamlscript with-includes.ml
+		Note that the last modification date of
+                the other source file(s) is not checked by
+                ocamlscript. If you want to force a recompilation, use
+                the -f option.
+
+* calc.ml: a complete example of using multiple source files.
+           lexer.mll, parser.mly and calc.ml were copied from the Objective
+           Caml reference manual (chapter on ocamllex and ocamlyacc), 
+           and calc.ml was adapted to work with ocamlscript.
+           Now it compiles and runs in one command:
+             ocamlscript calc.ml
+           instead of 4:
+             ocamllex lexer.mll
+             ocamlyacc parser.mly
+             ocamlopt -o calc parser.mli parser.ml lexer.ml calc.ml
+             ./calc
+
+* revised.ml: a program in Camlp4 revised syntax
+
+* pp.ml: shows how to use a custom preprocessor
+
+* hello-web.ml: a minimalistic CGI program which prints a webpage
+                saying only "Yes", "No", "Other" or "Undefined"
+		depending on whether the CGI variable "foo" has value
+                1, 0, some other defined value, or is undefined.
+                It requires the ocamlnet library and can be tested
+                from the command-line.
+		It recommended to compile and install such programs,
+                although installing the script directly into your
+                cgi-bin works too, as long as httpd has write access
+                to your cgi-bin directory and has access to the OCaml tools.
+
+		Compilation:		
+		  ocamlscript -c hello-web.ml
+
+		Installation:
+		  cp hello-web.ml.exe /path/to/cgi-bin/
+
+		Testing:
+		  http://localhost/cgi-bin/hello-web.ml.exe?foo=1

@@ -1,0 +1,89 @@
+VERSION 2
+=========
+
+2008-02-05: release 2.0.2
+- supports OCaml/Camlp4 3.10.1
+
+2007-04-07: release 2.0.1
+- added support for OCaml/Camlp4 3.10.0+beta
+
+2007-03-04: release 2.0.0
+- small change in the interface of the Pipeline module (new_cmd -> command)
+- added OCaml.pp (any preprocessor) 
+  and Ocaml.ppsrcloc (location formatter) variables
+
+2006-07-25: prerelease 1.99.5
+- added support for ocamlyacc
+
+2006-07-14: prerelease 1.99.4
+- added Ocaml.sources variable that can hold additional source files, e.g.
+     Ocaml.sources := ["../thing1.ml"]
+
+2006-06-24: pre-release 1.99.3
+- separation of examples and tests
+- added some examples
+
+2006-06-07: pre-release 1.99.2
+- replaced Sys.command by create_process so that arguments 
+  with special characters are not subject to shell interpretation
+
+2006-06-05: pre-release 1.99.1
+- important bugfix (scripts with shebang line and no "--" line)
+- not dependent of micmatch_pcre not pcre anymore
+
+2006-06-03: pre-release 1.99.0, nothing really changed since last time 
+
+2006-27-03
+This is an experimental extension of ocamlscript, which is
+incompatible with ocamlscript 1.1.
+
+Current features:
+- each script must have two parts, which are separated by a line starting
+  with "--" and followed by any number of blanks.
+- the first part gives instructions for the compilation of the second part,
+  which is the program itself (see "fulltest" file for an example).
+- the first part can be empty or can contain some OCaml code which 
+  makes a "compile" function visible at the end of the module.
+- by default, the Ocamlscript.Ocamlopt module is opened, which makes
+  a "compile" function available. 
+- the signature of this "compile" function is the following:
+  val compile : string -> string -> int
+  Its arguments are (1) the name of the source file to compile and (2) the
+  name of the executable which must be produced. These names are chosen by
+  ocamlscript, not by the script author.
+- the Ocamlopt module provides several hooks which can be used to
+  specify which libraries to use and other compilation options. It
+  uses the ocamlfind (Findlib) frontend to ocamlopt. The parameters
+  are currently initialized as follows:
+  let packs = ref []         (* findlib packages *)
+  let use_camlp4 = ref true  (* by default camlp4 is used *)
+  let revised = ref false    (* use this to use the revised syntax *)
+  let ocamlflags = ref []    (* any options that you may want to pass
+                                to ocamlopt *)
+  let ppopt = ref []         (* any options that you may want to pass
+                                to camlp4o or camlp4r *)
+  let verbose = ref false    (* that's for debugging *)
+
+- Any definition of a function named "compile" will override the
+  default one. Ocamlscript can be used to compile programs in any
+  language which accepts the same line directives as OCaml (it should
+  however be possible to make it more flexible in the future).
+  For now, it should be possible to define "compile" functions 
+  for ocamllex or ocaml+twt (and include them in the Ocamlscript library).
+
+
+
+VERSION 1
+=========
+
+* version 1.1 (2005-10-03): 
+
+ - the temporary copy of the original script contains proper reference
+   to original source so line number and script name is correct in case
+   of error (suggestion of Mike Lin);
+
+ - change license to a BSD-like one. Apparently Public Domain imposes
+   restriction of Software redistribution on a different medium. The new
+   license should allow to use the software for about any use.
+
+* version 1.0 (2005-08-23): original release.

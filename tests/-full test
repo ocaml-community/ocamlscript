@@ -1,0 +1,41 @@
+#!/usr/bin/env ocamlscript
+(*-*- tuareg -*-*)
+Ocaml.use_ocamllex := true;;
+Ocaml.packs := ["camlp4.macro"];;
+Ocaml.ocamlflags := ["-rectypes"; "unix.cmxa"];;
+--
+(* ocamllex file *)
+rule line f n = parse
+    [^'\n']* as x { newline (f n x) n lexbuf }
+and newline f n = parse
+    '\n'   { line f (n+1) lexbuf }
+  | eof    { () }
+  | ""     { assert false }
+{
+open Printf
+
+(* testing -rectypes *)
+type t = t array
+
+(* testing program arguments *)
+let args = Array.to_list Sys.argv
+let _ = 
+  assert (args <> []);
+  printf "Running %s\n%!" 
+    (String.concat " " (List.map (fun s -> sprintf "%S" s) args))
+
+(* running ocamllex stuff *)
+let prog_name = List.hd args
+let _ =
+  let ic = open_in_bin prog_name in
+  let lexbuf = Lexing.from_channel ic in
+  let rec f n s = printf "%i " n; f in
+  line f 0 lexbuf;
+  printf "\n"
+
+(* testing camlp4 extension *)
+let _ = printf "This should be the source file: %S\n" __FILE__
+
+(* testing library *)
+let _ = Unix.gettimeofday ()
+}

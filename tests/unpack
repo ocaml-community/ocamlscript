@@ -1,0 +1,4 @@
+#!./ocamlscript -debug -o "Hello ""World"""
+(* the line above only works on Unix flavors that pass all the options as
+   a single argument argv[1] *)
+let _ = print_endline "Hello \"World\""

@@ -1,0 +1,60 @@
+ifndef CAMLP4_VERSION
+  CAMLP4_VERSION = \
+    $(shell if `which camlp4orf`; then echo 310; else echo 309; fi)
+endif
+export CAMLP4_VERSION
+
+ifndef CAMLP4ORF
+  ifeq ($(CAMLP4_VERSION),309)
+    CAMLP4ORF = camlp4o pa_extend.cmo q_MLast.cmo
+  else
+    CAMLP4ORF = camlp4orf
+  endif
+endif
+export CAMLP4ORF
+
+
+ifndef CAMLP4RF
+  ifeq ($(CAMLP4_VERSION),309)
+    CAMLP4RF = camlp4r pa_extend.cmo q_MLast.cmo
+  else
+    CAMLP4RF = camlp4rf
+  endif
+endif
+export CAMLP4RF
+
+ifndef PR_O
+  ifeq ($(CAMLP4_VERSION),309)
+    PR_O = pr_o.cmo
+  else
+    PR_O = -printer o
+  endif
+endif
+export PR_O
+
+ifndef PR_R
+  ifeq ($(CAMLP4_VERSION),309)
+    PR_R = pr_r.cmo
+  else
+    PR_R = -printer r
+  endif
+endif
+export PR_R
+
+ifndef PARSER
+  ifeq ($(CAMLP4_VERSION),309)
+    PARSER =
+  else
+    PARSER = -parser
+  endif
+endif
+export PARSER
+
+ifndef PRINTER
+  ifeq ($(CAMLP4_VERSION),309)
+    PRINTER =
+  else
+    PRINTER = -printer
+  endif
+endif
+export PRINTER

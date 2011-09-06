@@ -1,0 +1,72 @@
+Usage: ocamlscript [ PACKED_OPTIONS [ OPTIONS ] [ -- ] [SCRIPTNAME] [ARGS] ]
+
+Ocamlscript normally reads the source code of a program from a file, looks
+if a compiled executable exists for this program. If it exists and if it
+is more recent than the source file, the executable is executed immediately,
+otherwise it is updated by executing compilation instructions that can
+be specified in the program file.
+
+A typical self-executable script looks as follows:
+
+  #!/usr/bin/env ocamlscript
+  (* this is the compilation section, in OCaml *)
+  Ocaml.packs := ["unix"; "micmatch_pcre"] (* Findlib packages *)
+  --
+  (* this is the program section *)
+  let _ =
+    ...
+
+
+Structure of the command line:
+
+PACKED_OPTIONS:
+  the first argument of ocamlscript. It is either unpacked into 
+  several arguments that are passed to ocamlscript or into a script name 
+  if this name doesn't start with "-". Double-quotes can be used 
+  to enclose arguments that contain whitespace or double-quotes. 
+  Double-quotes must be doubled. For instance, the following 
+  self-executable script would be compiled into an executable named
+  Hello "World":
+    #!/usr/bin/ocamlscript -o "Hello ""World"""
+    print_endline "Hello "World""
+  
+  Important note: on some Unix systems, the whole 
+  '-o "Hello ""World"""' string is passed as a single argument 
+  to ocamlscript. This is why the first argument must be unpacked, 
+  even if ocamlscript is called explicitely from the command line.
+
+OPTIONS: 
+  any number of arguments in this section are treated like options
+  to ocamlscript until a either a non-option is encountered, which is 
+  understood as the script name (SCRIPTNAME) or "--" which stops
+  the list of arguments that are passed to ocamlscript.
+
+Ocamlscript supports the following options:
+  --  marks the end of ocamlscript arguments
+  -help  displays a help message and exit
+  --help  same as -help
+  -c  compile only
+  -o EXEC_NAME  specify a name for the executable 
+                (required if the program is not read from a file)
+  -e PROGRAM  execute the code given here instead of reading it from a file
+  -f  force recompilation which is otherwise based on last modification dates
+  -debug  print messages about what ocamlscript is doing
+  -version  prints the version identifier to stdout and exit
+  -  read program from stdin instead of a file
+  -vm VIRTUAL_MACHINE  run the executable using this virtual machine (e.g. 
+                       ocamlrun)
+
+"--": passed as an argument to ocamlscript in the PACKED_OPTIONS argument
+        or in the OPTIONS argument marks the end of the arguments that
+        are passed to ocamlscript. Arguments that follow will be 
+        interpreted as arguments of the script.
+        Arguments that follow "--" in the PACKED_OPTIONS argument
+        will be passed as arguments to the final executable. The first
+        argument that follows "--" in the OPTIONS command line arguments
+        is treated as the script name, unless the program is read from
+        another source, as specified by options "-e" (a string) or "-"
+        (standard input).
+
+
+For a full documentation on the structure of the compilation section, go to
+ocamlscript's website (http://martin.jambon.free.fr/ocamlscript.html).
