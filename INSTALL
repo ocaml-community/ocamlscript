@@ -14,7 +14,8 @@ Installation:
 ------------
 
 Requirements: 
-  * OCaml version 3.08.x or 3.09.x, 
+  * OCaml version 3.10 or higher,
+  * Camlp4 (including command camlp4orf),
   * GNU make, 
   * Findlib (ocamlfind)
 

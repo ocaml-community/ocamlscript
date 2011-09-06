@@ -16,7 +16,7 @@ endif
 export BINDIR
 
 PACKS = unix str
-PP = camlp4o -I . $(PARSER) pa_tryfinally.cmo $(PARSER) pa_opt.cmo
+PP = camlp4o -I . -parser pa_tryfinally.cmo -parser pa_opt.cmo
 export PP
 
 CAMLP4_VARIANTS = pa_tryfinally.ml pa_opt.ml
@@ -35,14 +35,14 @@ opt: common optlib optexe
 ###
 
 common: version.ml
-	ocamlc -pp '$(CAMLP4ORF) -loc _loc' -c \
-		-I +camlp4 pa_opt$(CAMLP4_VERSION).ml && \
-		cp pa_opt$(CAMLP4_VERSION).cmo pa_opt.cmo && \
-		cp pa_opt$(CAMLP4_VERSION).cmi pa_opt.cmi
-	ocamlc -pp '$(CAMLP4ORF) -loc _loc' -c \
-		-I +camlp4 pa_tryfinally$(CAMLP4_VERSION).ml && \
-		cp pa_tryfinally$(CAMLP4_VERSION).cmo pa_tryfinally.cmo && \
-		cp pa_tryfinally$(CAMLP4_VERSION).cmi pa_tryfinally.cmi
+	ocamlc -pp 'camlp4orf -loc _loc' -c \
+		-I +camlp4 pa_opt310.ml && \
+		cp pa_opt310.cmo pa_opt.cmo && \
+		cp pa_opt310.cmi pa_opt.cmi
+	ocamlc -pp 'camlp4orf -loc _loc' -c \
+		-I +camlp4 pa_tryfinally310.ml && \
+		cp pa_tryfinally310.cmo pa_tryfinally.cmo && \
+		cp pa_tryfinally310.cmi pa_tryfinally.cmi
 
 byteexe: bytelib
 	ocamlfind ocamlc -o ocamlscript.byte -pp '$(PP)' \
@@ -133,11 +133,8 @@ clean::
 OCAML_VERSION = $(shell ocamlc -v | head -1 | \
                   sed -e 's/.*version \([0-9]\.[0-9][0-9]\).*/\1/')
 
-ifneq ($(OCAML_VERSION),3.08)
-  OCAMLBCFLAGS = -for-pack Ocamlscript
-  OCAMLNCFLAGS = -for-pack Ocamlscript
-endif
+OCAMLBCFLAGS = -for-pack Ocamlscript
+OCAMLNCFLAGS = -for-pack Ocamlscript
 
 OCAMLMAKEFILE = OCamlMakefile
 include $(OCAMLMAKEFILE)
-include Camlp4Version
