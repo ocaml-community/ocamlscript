@@ -101,10 +101,12 @@ archive: all version help
 		cd /tmp && cp -r ocamlscript ocamlscript-$(VERSION) && \
 		tar czf ocamlscript.tar.gz ocamlscript && \
 		tar cjf ocamlscript.tar.bz2 ocamlscript && \
-		tar czf ocamlscript-$(VERSION).tar.gz ocamlscript-$(VERSION) && \
+		tar czf ocamlscript-$(VERSION).tar.gz \
+			ocamlscript-$(VERSION) && \
 		tar cjf ocamlscript-$(VERSION).tar.bz2 ocamlscript-$(VERSION)
 	mv /tmp/ocamlscript.tar.gz /tmp/ocamlscript.tar.bz2 .
-	mv /tmp/ocamlscript-$(VERSION).tar.gz /tmp/ocamlscript-$(VERSION).tar.bz2 .
+	mv /tmp/ocamlscript-$(VERSION).tar.gz \
+			/tmp/ocamlscript-$(VERSION).tar.bz2 .
 	cp ocamlscript.tar.gz ocamlscript.tar.bz2 $$WWW/
 	cp ocamlscript-$(VERSION).tar.gz ocamlscript-$(VERSION).tar.bz2 $$WWW/
 	cp LICENSE $$WWW/ocamlscript-license.txt
