@@ -1,6 +1,9 @@
 VERSION 2
 =========
 
+2012-02-03: release 2.0.3
+- no user-visible behavior (new way of creating the source tar.gz)
+
 2008-02-05: release 2.0.2
 - supports OCaml/Camlp4 3.10.1
 

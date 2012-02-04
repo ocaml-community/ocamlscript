@@ -1,4 +1,4 @@
-VERSION = 2.0.2
+VERSION = 2.0.3
 RESULT = ocamlscript
 SOURCES = \
   version.ml pipeline.mli pipeline.ml common.mli common.ml \
