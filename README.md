@@ -12,4 +12,4 @@ Primary download site: http://mjambon.com/ocamlscript.html
 
 Authors: David Mentre and Martin Jambon
 
-Contact: Martin Jambon <mjambon@mjambon.com>
+Contact: Martin Jambon <martin@mjambon.com>
