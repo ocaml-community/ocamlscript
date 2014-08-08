@@ -253,6 +253,11 @@ let write_header ~pos ~source ~source_option ~verbose ~prog_file lines =
   let file, oc = Filename.open_temp_file "meta" ".ml" in
   fprintf oc "\
 #%i %S;;
+(* Opam installations of findlib place topfind in a different directory *)
+let () =
+  try Topdirs.dir_directory (Sys.getenv \"OCAML_TOPLEVEL_PATH\")
+  with Not_found -> ()
+;;
 #use \"topfind\";;
 #require \"ocamlscript\";;
 Ocamlscript.Common.verbose := %s;;
