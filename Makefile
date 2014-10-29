@@ -4,6 +4,8 @@ SOURCES = \
   version.ml pipeline.mli pipeline.ml common.mli common.ml \
   utils.mli utils.ml ocaml.mli ocaml.ml
 
+CAMLP4 := $(shell ocamlfind query camlp4)
+
 STDBIN = $(shell dirname `which ocamlfind`)
 ifndef PREFIX
   PREFIX = $(shell dirname $(STDBIN))
@@ -36,11 +38,11 @@ opt: common optlib optexe
 
 common: version.ml
 	ocamlc -pp 'camlp4orf -loc _loc' -c \
-		-I +camlp4 pa_opt310.ml && \
+		-I $(CAMLP4) pa_opt310.ml && \
 		cp pa_opt310.cmo pa_opt.cmo && \
 		cp pa_opt310.cmi pa_opt.cmi
 	ocamlc -pp 'camlp4orf -loc _loc' -c \
-		-I +camlp4 pa_tryfinally310.ml && \
+		-I $(CAMLP4) pa_tryfinally310.ml && \
 		cp pa_tryfinally310.cmo pa_tryfinally.cmo && \
 		cp pa_tryfinally310.cmi pa_tryfinally.cmi
 
