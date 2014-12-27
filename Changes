@@ -1,6 +1,9 @@
 VERSION 2
 =========
 
+2014-12-27: release 2.0.4
+- fixes for opam and recent installs of camlp4
+
 2012-02-03: release 2.0.3
 - no user-visible behavior (new way of creating the source tar.gz)
 
