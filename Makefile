@@ -2,7 +2,7 @@ VERSION = 2.0.4
 RESULT = ocamlscript
 SOURCES = \
   version.ml pipeline.mli pipeline.ml common.mli common.ml \
-  utils.mli utils.ml ocaml.mli ocaml.ml
+  utils.mli utils.ml ocaml.mli ocaml.ml std.ml
 
 CAMLP4 := $(shell ocamlfind query camlp4)
 
