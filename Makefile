@@ -18,10 +18,10 @@ endif
 export BINDIR
 
 PACKS = unix str
-PP = camlp4o -I . -parser pa_tryfinally.cmo -parser pa_opt.cmo
+PP = camlp4o -I . -parser pa_opt.cmo
 export PP
 
-CAMLP4_VARIANTS = pa_tryfinally.ml pa_opt.ml
+CAMLP4_VARIANTS = pa_opt.ml
 OCAMLFLAGS = -dtypes
 
 
@@ -41,10 +41,10 @@ common: version.ml
 		-I $(CAMLP4) pa_opt310.ml && \
 		cp pa_opt310.cmo pa_opt.cmo && \
 		cp pa_opt310.cmi pa_opt.cmi
-	ocamlc -pp 'camlp4orf -loc _loc' -c \
-		-I $(CAMLP4) pa_tryfinally310.ml && \
-		cp pa_tryfinally310.cmo pa_tryfinally.cmo && \
-		cp pa_tryfinally310.cmi pa_tryfinally.cmi
+	# ocamlc -pp 'camlp4orf -loc _loc' -c \
+	# 	-I $(CAMLP4) pa_tryfinally310.ml && \
+	# 	cp pa_tryfinally310.cmo pa_tryfinally.cmo && \
+	# 	cp pa_tryfinally310.cmi pa_tryfinally.cmi
 
 byteexe: bytelib
 	ocamlfind ocamlc -o ocamlscript.byte -pp '$(PP)' \
@@ -123,14 +123,14 @@ archive: all version help
 TRASH = \
   bc.done nc.done main.cm* main.o main.annot \
   ocamlscript$(EXE) ocamlscript.byte$(EXE) \
-  pa_opt*.cm* pa_tryfinally*.cm* *~ \
+  pa_opt*.cm* *~ \
   version.ml META
 
 
 clean::
 	cd tests && $(MAKE) clean
 	cd examples && $(MAKE) clean
-	rm -rf ocamldoc
+	rm -rf ocamldoc *.cmi *.cmo
 
 OCAML_VERSION = $(shell ocamlc -v | head -1 | \
                   sed -e 's/.*version \([0-9]\.[0-9][0-9]\).*/\1/')
