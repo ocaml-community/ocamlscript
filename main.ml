@@ -326,7 +326,7 @@ let split_file =
   fun ?log source_option ->
     let source, lines = 
       match source_option with
-	  `Stdin -> "", Text.lines_of_channel Pervasives.stdin
+	  `Stdin -> "", Text.lines_of_channel stdin
 	| `String s -> "", (Str.split newline) s
 	| `File file -> file, Text.lines_of_file file in
 
@@ -535,7 +535,7 @@ let main () =
     print_endline Version.version
   else
     let bin = obin_name script_path_option in
-    let log = if !Opt.debug then Some Pervasives.stdout else None in
+    let log = if !Opt.debug then Some stdout else None in
     let compilation_status =
       if !Opt.f || needs_recompile script_path_option then
 	let status = compile_script ?log script_path_option in
