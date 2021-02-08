@@ -326,7 +326,7 @@ let split_file =
   fun ?log source_option ->
     let source, lines = 
       match source_option with
-	  `Stdin -> "", Text.lines_of_channel Pervasives.stdin
+	  `Stdin -> "", Text.lines_of_channel stdin
 	| `String s -> "", (Str.split newline) s
 	| `File file -> file, Text.lines_of_file file in
 
@@ -345,10 +345,12 @@ let split_file =
 
 let compile_script ?log source_option =
   let meta_name, prog_name = split_file ?log source_option in
-  try Pipeline.run_command (Pipeline.command ["ocaml"; meta_name])
-  finally (* comment out for debugging: *)
-    Pipeline.remove meta_name;
-    Pipeline.remove prog_name
+  Fun.protect (fun () -> Pipeline.run_command (Pipeline.command ["ocaml"; meta_name]))
+    ~finally:(fun () ->
+        (* comment out for debugging: *)
+        Pipeline.remove meta_name;
+        Pipeline.remove prog_name
+      )
 
 let absolute path =
   if Filename.is_relative path then
@@ -531,7 +533,7 @@ let main () =
     print_endline Version.version
   else
     let bin = obin_name script_path_option in
-    let log = if !Opt.debug then Some Pervasives.stdout else None in
+    let log = if !Opt.debug then Some stdout else None in
     let compilation_status =
       if !Opt.f || needs_recompile script_path_option then
 	let status = compile_script ?log script_path_option in
