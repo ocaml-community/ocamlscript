@@ -547,9 +547,3 @@ let main () =
       Unix.execv real_bin (Array.of_list real_args)
     else (* includes the case where there is non-writeable executable *)
       exit compilation_status
-
-let _ =
-  try main ()
-  with Failure s ->
-    eprintf "ocamlscript: %s\n%!" s;
-    exit 2
