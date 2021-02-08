@@ -1,0 +1,15 @@
+opam-version: "2.0"
+synopsis: "Tool compiling OCaml scripts to native code"
+authors: "Martin Jambon"
+maintainer: ["martin@mjambon.com"
+             "Francois Berenger <unixjunkie@sdf.org>"]
+homepage: "https://github.com/mjambon/ocamlscript"
+bug-reports: "https://github.com/mjambon/ocamlscript/issues"
+dev-repo: "git://github.com/mjambon/ocamlscript"
+depends: ["ocaml" {>= "4.08"} # because of Fun.protect
+          "dune" {>= "1.11"}]
+build: ["dune" "build" "-p" name "-j" jobs]
+# url {
+#   src: "https://github.com/mjambon/ocamlscript/archive/XXX"
+#   checksum: "md5=XXX"
+# }
