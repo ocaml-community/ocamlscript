@@ -1,7 +1,8 @@
 opam-version: "2.0"
 synopsis: "Tool which compiles OCaml scripts into native code"
-maintainer: "martin@mjambon.com"
 authors: "Martin Jambon"
+maintainer: ["martin@mjambon.com"
+             "Francois Berenger <unixjunkie@sdf.org>"]
 homepage: "https://github.com/mjambon/ocamlscript"
 bug-reports: "https://github.com/mjambon/ocamlscript/issues"
 dev-repo: "git://github.com/mjambon/ocamlscript"
