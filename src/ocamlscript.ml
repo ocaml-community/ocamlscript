@@ -6,7 +6,6 @@
 *)
 
 open Printf
-open Ocamlscript
 
 module Opt =
 struct
@@ -132,7 +131,7 @@ let output_line oc s = output_string oc s; output_string oc endline
    Doesn't handle dependencies toward runtime things that might change
    incompatibly (DLLs, bytecode version, ...).
    ocamlscript -f can be used to force recompilation in these cases. *)
-let needs_recompile ?log = function
+let needs_recompile ?_log = function
   | `Stdin | `String _ -> true
   | `File source ->
     let bin = bin_name source in
@@ -277,7 +276,7 @@ let write_body ~pos ~source ~locstyle lines =
   let file, oc = Filename.open_temp_file "prog" ".ml" in
   (match locstyle with
    | `Ocaml -> fprintf oc "#%i %S;;\n" pos source
-   | `Blank -> for i = 1 to pos - 1 do output_string oc endline done
+   | `Blank -> for _i = 1 to pos - 1 do output_string oc endline done
    | `None -> ());
   List.iter (output_line oc) lines;
   close_out oc;
@@ -484,7 +483,7 @@ let guess_arg1 s =
 let main () =
   let script_path_option, script_args =
     match Array.to_list Sys.argv with
-    | ocamlscript :: (arg1 :: other_args as l) ->
+    | _ocamlscript :: (arg1 :: other_args as l) ->
       (match guess_arg1 arg1 with
        | `Script_name -> (`File (absolute arg1), l)
        | `Ocamlscript_args (opt1, stopped, hardcoded_script_args) ->
@@ -495,7 +494,7 @@ let main () =
 	     | Some o1 -> o1 :: other_args in
 	   if stopped then continued_args
 	   else
-	     let opt1', stopped', command_line_script_args =
+	     let opt1', _stopped', command_line_script_args =
 	       process_ocamlscript_args continued_args in
              (match opt1' with
               | None -> ()
@@ -511,7 +510,7 @@ let main () =
 	   (`String s,
 	    "-e" ::
 	    (hardcoded_script_args @ command_line_script_args))
-	 | Some (`File s) -> assert false
+	 | Some (`File _s) -> assert false
 	 | None ->
 	   match command_line_script_args with
            | [] ->

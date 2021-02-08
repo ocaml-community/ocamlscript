@@ -72,7 +72,7 @@ let rec remove ?log file =
     | S_SOCK ->
       maybe_log log "remove file %S\n%!" file;
       Sys.remove file
-  with e -> ()
+  with _e -> ()
 
 
 (* like Sys.command, but without shell interpretation *)
