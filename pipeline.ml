@@ -1,4 +1,3 @@
-(*pp $PP *)
 
 open Printf
 open Unix

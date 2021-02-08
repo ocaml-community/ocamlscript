@@ -499,9 +499,11 @@ let main () =
 		   if stopped then continued_args
 		   else 
 		     let opt1', stopped', command_line_script_args =
-		       process_ocamlscript_args continued_args in
-		     opt1' ?? failwith 
-		       (sprintf "%s option expects an argument" opt1');
+	               process_ocamlscript_args continued_args in
+                     (match opt1' with
+                      | None -> ()
+                      | Some x -> failwith
+                                    (sprintf "%s option expects an argument" x));
 		     command_line_script_args in
 		 match !Opt.from with
 		     Some `Stdin ->
