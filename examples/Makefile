@@ -1,8 +1,8 @@
 .PHONY: default clean
 default:
-	../ocamlscript factorial.ml 100
-	../ocamlscript revised.ml
-	../ocamlscript with-includes.ml
-	echo "1+1" | ../ocamlscript calc.ml
+	../_build/default/src/main.exe factorial.ml 100
+	../_build/default/src/main.exe revised.ml
+	../_build/default/src/main.exe with-includes.ml
+	echo "1+1" | ../_build/default/src/main.exe calc.ml
 clean:
 	$(RM) *~ *.exe
