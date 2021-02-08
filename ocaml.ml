@@ -18,9 +18,8 @@ let use_camlp4 = ref true  (* by default camlp4 is used *)
 let use_ocamlc = ref false (* by default we want native code *)
 let use_ocamlfind = ref false (* used only if necessary *)
 let revised = ref false    (* use this to use the revised syntax *)
-let ocamlflags = Common.extra_args
-		           (* any options that you may want to pass
-                              to ocamlopt *)
+let ocamlflags = Common.extra_args (* any options that you may want to pass
+                                      to ocamlopt *)
 let ppopt = ref []         (* any options that you may want to pass
                               to camlp4o or camlp4r *)
 
@@ -33,30 +32,28 @@ let ppsrcloc = ref None      (* non-standard source location generator *)
 
 let exe s =
   match Sys.os_type with
-      "Win32" | "Cygwin"->
-	if Filename.check_suffix s ".exe" then s
-	else s ^ ".exe"
-    | "Unix" | _ -> s
+  | "Win32" | "Cygwin"->
+    if Filename.check_suffix s ".exe" then s
+    else s ^ ".exe"
+  | "Unix" | _ -> s
 
 let import path =
   let src = !+ path in
   let dst = Filename.basename src in
   let head =
     match !pp, !ppsrcloc, !revised with
-	Some _, Some f, _ -> f src
-      | _, _, false -> sprintf "#1 %S;;\n" src
-      | _, _, true -> sprintf "#1 %S;\n" src in
+    | Some _, Some f, _ -> f src
+    | _, _, false -> sprintf "#1 %S;;\n" src
+    | _, _, true -> sprintf "#1 %S;\n" src in
   Pipeline.copy_file ~head src dst
 
-(*
-let ocamllex_command input =
-  if !use_ocamllex then
-    Some ((fun () -> ()),
-	  new_cmd [!ocamllex; input;
-		   "-o"; "ocamlscript_ocamllex_out.ml"; "-q"],
-	  "ocamlscript_ocamllex_out.ml")
-  else None
-*)
+(* let ocamllex_command input =
+ *   if !use_ocamllex then
+ *     Some ((fun () -> ()),
+ *           new_cmd [!ocamllex; input;
+ *                    "-o"; "ocamlscript_ocamllex_out.ml"; "-q"],
+ *           "ocamlscript_ocamllex_out.ml")
+ *   else None *)
 
 let file_kind file =
   if Filename.check_suffix file ".mli" then `Mli
@@ -73,25 +70,25 @@ let file_kind file =
 
 let extra_command file =
   match file_kind file with
-      `Mli | `Ml -> ([], [file])
-    | `Mll ->
-	([command [!ocamllex; file; "-q"]],
-	 [(Filename.chop_extension file) ^ ".ml"])
-    | `Mly ->
-	let p = Filename.chop_extension file in
-	([command [!ocamlyacc; file]],
-	[p ^ ".mli"; p ^ ".ml"])
-    | `Ext s ->
-	failwith (sprintf "don't know how to handle %s files: %s" s file)
-    | `Unknown ->
-	failwith (sprintf "don't know how to handle this file: %s" file)
+  | `Mli | `Ml -> ([], [file])
+  | `Mll ->
+    ([command [!ocamllex; file; "-q"]],
+     [(Filename.chop_extension file) ^ ".ml"])
+  | `Mly ->
+    let p = Filename.chop_extension file in
+    ([command [!ocamlyacc; file]],
+     [p ^ ".mli"; p ^ ".ml"])
+  | `Ext s ->
+    failwith (sprintf "don't know how to handle %s files: %s" s file)
+  | `Unknown ->
+    failwith (sprintf "don't know how to handle this file: %s" file)
 
 let pp_command file =
   match !pp with
-      None -> [], [file]
-    | Some f ->
-	let cmd, files = f file in
-	([cmd], files)
+  | None -> [], [file]
+  | Some f ->
+    let cmd, files = f file in
+    ([cmd], files)
 
 
 let extra_commands sources =
@@ -105,15 +102,14 @@ let extra_commands sources =
 let ocaml_command input =
   let really_use_ocamlfind =
     match !use_ocamlfind, !packs with
-	true, _ | _, _ :: _ -> true
-      | _ -> false in
+    | true, _ | _, _ :: _ -> true
+    | _ -> false in
   let compiler =
     if really_use_ocamlfind then
       if !use_ocamlc then [!ocamlfind; "ocamlc"]
       else [!ocamlfind; "ocamlopt"]
-    else
-      if !use_ocamlc then [!ocamlc]
-      else [!ocamlopt] in
+    else if !use_ocamlc then [!ocamlc]
+    else [!ocamlopt] in
 
   let flags = !ocamlflags in
   let camlp4_stuff =
@@ -124,13 +120,13 @@ let ocaml_command input =
       let ppoptions =
 	if !ppopt = [] then []
 	else
-	  if really_use_ocamlfind then
-	    List.flatten (List.map (fun s -> ["-ppopt"; s]) !ppopt)
-	  else !ppopt in
+	if really_use_ocamlfind then
+	  List.flatten (List.map (fun s -> ["-ppopt"; s]) !ppopt)
+	else !ppopt in
       if really_use_ocamlfind then
 	"-syntax" :: syntax :: ppoptions
       else
-	let space = function "" -> "" | s -> " " ^ s in
+	let space = function | "" -> "" | s -> " " ^ s in
 	["-pp"; sprintf "'%s%s'" camlp4 (space (String.concat " " ppoptions))]
     else [] in
   let packages =
@@ -149,7 +145,7 @@ let ocaml_command input =
   let xcommands, all_ml_files = extra_commands all_sources in
 
   let args = compiler @ "-o" :: "prog" ::
-	       flags @ camlp4_stuff @ packages @ all_ml_files in
+	                flags @ camlp4_stuff @ packages @ all_ml_files in
   (init, xcommands, command args, exe "prog")
 
 
