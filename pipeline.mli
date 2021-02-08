@@ -41,3 +41,5 @@ val copy_file :
   ?log:out_channel -> ?head:string -> ?tail:string -> ?force:bool ->
   string -> string -> unit
 val run_command : ?log:out_channel -> command -> int
+
+val maybe_log : out_channel option -> ('a, out_channel, unit) format -> 'a

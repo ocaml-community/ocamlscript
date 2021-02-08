@@ -537,7 +537,7 @@ let main () =
     let compilation_status =
       if !Opt.f || needs_recompile script_path_option then
 	let status = compile_script ?log script_path_option in
-	log ?? fprintf log "compilation exit status: %i\n%!" status;
+        Pipeline.maybe_log log "compilation exit status: %i\n%!" status;
 	status
       else 0 in
 

@@ -49,6 +49,13 @@ let temp_dir prefix suffix =
       if counter >= 1000 then raise e else try_name (counter + 1)
   in try_name 0
 
+let stderr_out_chan = Unix.out_channel_of_descr stderr
+
+let maybe_log maybe_out fmt =
+  (match maybe_out with
+   | Some out -> fprintf out
+   | None -> ifprintf stderr_out_chan) fmt
+
 (* rm -rf *)
 let rec remove ?log file =
   try
@@ -56,7 +63,7 @@ let rec remove ?log file =
     match st.st_kind with
 	S_DIR ->
 	  Array.iter (fun name -> remove (file // name)) (Sys.readdir file);
-	  log ?? fprintf log "remove directory %S\n%!" file;
+	  maybe_log log "remove directory %S\n%!" file;
 	  rmdir file
       | S_REG
       | S_CHR
@@ -64,7 +71,7 @@ let rec remove ?log file =
       | S_LNK
       | S_FIFO
       | S_SOCK ->
-	  log ?? fprintf log "remove file %S\n%!" file;
+	  maybe_log log "remove file %S\n%!" file;
 	  Sys.remove file
   with e -> ()
 
@@ -101,23 +108,23 @@ let concat_cmd cmd = String.concat " " cmd.args
 let run_command ?log cmd =
   match cmd.args with
       [] ->
-	log ?? fprintf log "empty command\n%!"; 0
+	maybe_log log "empty command\n%!"; 0
     | prog :: _ ->
-	log ?? fprintf log "%s: %s\n%!" prog (concat_cmd cmd);
+	maybe_log log "%s: %s\n%!" prog (concat_cmd cmd);
 	let status =
 	  array_command ?stdin:cmd.stdin ?stdout:cmd.stdout
 	    prog (Array.of_list cmd.args) in
-	log ?? fprintf log "exit status %i\n%!" status;
+	maybe_log log "exit status %i\n%!" status;
 	status
 
 let exec ?log cmd =
-  log ?? fprintf log "%s\n%!" (concat_cmd cmd);
+  maybe_log log "%s\n%!" (concat_cmd cmd);
   let status = run_command cmd in
-  log ?? fprintf log "exit status %i\n%!" status;
+  maybe_log log "exit status %i\n%!" status;
   status
 
 let copy_file ?log ?(head = "") ?(tail = "") ?(force = false) src dst =
-  log ?? fprintf log "copy %S to %S\n%!" src dst;
+  maybe_log log "copy %S to %S\n%!" src dst;
   if not force && Sys.file_exists dst then
     invalid_arg
       (sprintf "Pipeline.copy_file: destination file %s already exists" dst);
@@ -178,15 +185,15 @@ let run ?log
   Fun.protect
     (fun () ->
       let base = Sys.getcwd () in
-      log ?? fprintf log "change directory %S\n%!" dir;
+      maybe_log log "change directory %S\n%!" dir;
       Sys.chdir dir;
       before ();
       copy_files ?log base dir (List.map flip (match_files p.input input));
       let status = loop p.commands in
-      log ?? fprintf log "change directory %S\n%!" base;
+      maybe_log log "change directory %S\n%!" base;
       after ();
       Sys.chdir base;
-      log ?? fprintf log "command pipeline exits with status %i\n%!" status;
+      maybe_log log "command pipeline exits with status %i\n%!" status;
       if status = 0 then
         copy_files ?log ~force:true dir base (match_files p.output output);
       status
