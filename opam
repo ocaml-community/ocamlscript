@@ -7,8 +7,7 @@ homepage: "https://github.com/mjambon/ocamlscript"
 bug-reports: "https://github.com/mjambon/ocamlscript/issues"
 dev-repo: "git://github.com/mjambon/ocamlscript"
 depends: ["ocaml" {>= "4.08"} # because of Fun.protect
-          "ocamlfind"
-          "camlp4"]
+          "ocamlfind"]
 build: [make]
 install: [make "install"]
 remove: ["ocamlfind" "remove" "ocamlscript"]
