@@ -2,7 +2,7 @@
 default:
 	@echo '*** These tests are for developers only! ***'
 	@echo -e '*** They might not work on your platform! ***\n\n'
-	cp ../ocamlscript .
+	\cp -f ../_build/default/src/main.exe ./ocamlscript
 	./unpack
 	'./Hello "World"'
 	./fulltest arg1 arg2
