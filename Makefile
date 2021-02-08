@@ -18,10 +18,10 @@ endif
 export BINDIR
 
 PACKS = unix str
-PP = camlp4o -I . -parser pa_opt.cmo
-export PP
+# PP = camlp4o -I . -parser pa_opt.cmo
+# export PP
 
-CAMLP4_VARIANTS = pa_opt.ml
+# CAMLP4_VARIANTS = pa_opt.ml
 OCAMLFLAGS = -dtypes
 
 
@@ -37,21 +37,21 @@ opt: common optlib optexe
 ###
 
 common: version.ml
-	ocamlc -pp 'camlp4orf -loc _loc' -c \
-		-I $(CAMLP4) pa_opt310.ml && \
-		cp pa_opt310.cmo pa_opt.cmo && \
-		cp pa_opt310.cmi pa_opt.cmi
+	# ocamlc -pp 'camlp4orf -loc _loc' -c \
+	# 	-I $(CAMLP4) pa_opt310.ml && \
+	# 	cp pa_opt310.cmo pa_opt.cmo && \
+	# 	cp pa_opt310.cmi pa_opt.cmi
 	# ocamlc -pp 'camlp4orf -loc _loc' -c \
 	# 	-I $(CAMLP4) pa_tryfinally310.ml && \
 	# 	cp pa_tryfinally310.cmo pa_tryfinally.cmo && \
 	# 	cp pa_tryfinally310.cmi pa_tryfinally.cmi
 
 byteexe: bytelib
-	ocamlfind ocamlc -o ocamlscript.byte -pp '$(PP)' \
+	ocamlfind ocamlc -o ocamlscript.byte \
 	  -package '$(PACKS)' -linkpkg $(OCAMLFLAGS) \
 	  ocamlscript.cmo main.ml
 optexe: optlib
-	ocamlfind ocamlopt -o ocamlscript -pp '$(PP)' \
+	ocamlfind ocamlopt -o ocamlscript \
 	  -package '$(PACKS)' -linkpkg $(OCAMLFLAGS) \
 	  ocamlscript.cmx main.ml
 bytelib: pabc
@@ -123,7 +123,7 @@ archive: all version help
 TRASH = \
   bc.done nc.done main.cm* main.o main.annot \
   ocamlscript$(EXE) ocamlscript.byte$(EXE) \
-  pa_opt*.cm* *~ \
+  *~ \
   version.ml META
 
 
