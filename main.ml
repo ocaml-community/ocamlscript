@@ -1,4 +1,4 @@
-(* 
+(*
  ocamlscript: a utility to have shell-like optimised scripts in OCaml
 
  Copyright 2005 David MENTRE <dmentre@linux-france.org>
@@ -23,7 +23,7 @@ struct
   let from = ref (None : [`File of string | `String of string | `Stdin] option)
   let o = ref None (* choose a name for the compiled executable *)
   let vm = ref None (* possible bytecode interpreter *)
-  let extra_args = ref [] 
+  let extra_args = ref []
 
   let help_message = "\
 Usage: ocamlscript [ PACKED_OPTIONS [ OPTIONS ] [ -- ] [SCRIPTNAME] [ARGS] ]
@@ -48,24 +48,24 @@ A typical self-executable script looks as follows:
 Structure of the command line:
 
 PACKED_OPTIONS:
-  the first argument of ocamlscript. It is either unpacked into 
-  several arguments that are passed to ocamlscript or into a script name 
-  if this name doesn't start with \"-\". Double-quotes can be used 
-  to enclose arguments that contain whitespace or double-quotes. 
-  Double-quotes must be doubled. For instance, the following 
+  the first argument of ocamlscript. It is either unpacked into
+  several arguments that are passed to ocamlscript or into a script name
+  if this name doesn't start with \"-\". Double-quotes can be used
+  to enclose arguments that contain whitespace or double-quotes.
+  Double-quotes must be doubled. For instance, the following
   self-executable script would be compiled into an executable named
   Hello \"World\":
     #!/usr/bin/ocamlscript -o \"Hello \"\"World\"\"\"
     print_endline \"Hello \"World\"\"
-  
-  Important note: on some Unix systems, the whole 
-  '-o \"Hello \"\"World\"\"\"' string is passed as a single argument 
-  to ocamlscript. This is why the first argument must be unpacked, 
+
+  Important note: on some Unix systems, the whole
+  '-o \"Hello \"\"World\"\"\"' string is passed as a single argument
+  to ocamlscript. This is why the first argument must be unpacked,
   even if ocamlscript is called explicitely from the command line.
 
-OPTIONS: 
+OPTIONS:
   any number of arguments in this section are treated like options
-  to ocamlscript until a either a non-option is encountered, which is 
+  to ocamlscript until a either a non-option is encountered, which is
   understood as the script name (SCRIPTNAME) or \"--\" which stops
   the list of arguments that are passed to ocamlscript.
 
@@ -74,19 +74,19 @@ Ocamlscript supports the following options:
   -help  displays a help message and exit
   --help  same as -help
   -c  compile only
-  -o EXEC_NAME  specify a name for the executable 
+  -o EXEC_NAME  specify a name for the executable
                 (required if the program is not read from a file)
   -e PROGRAM  execute the code given here instead of reading it from a file
   -f  force recompilation which is otherwise based on last modification dates
   -debug  print messages about what ocamlscript is doing
   -version  prints the version identifier to stdout and exit
   -  read program from stdin instead of a file
-  -vm VIRTUAL_MACHINE  run the executable using this virtual machine (e.g. 
+  -vm VIRTUAL_MACHINE  run the executable using this virtual machine (e.g.
                        ocamlrun)
 
 \"--\": passed as an argument to ocamlscript in the PACKED_OPTIONS argument
         or in the OPTIONS argument marks the end of the arguments that
-        are passed to ocamlscript. Arguments that follow will be 
+        are passed to ocamlscript. Arguments that follow will be
         interpreted as arguments of the script.
         Arguments that follow \"--\" in the PACKED_OPTIONS argument
         will be passed as arguments to the final executable. The first
@@ -101,7 +101,7 @@ ocamlscript's website (http://martin.jambon.free.fr/ocamlscript.html).
 "
 end
 
-(* more generic than .opt since we can compile with other commands than 
+(* more generic than .opt since we can compile with other commands than
    ocamlopt *)
 let bin_suffix = ".exe"
 
@@ -129,7 +129,7 @@ let endline = if Sys.os_type = "Win32" then "\r\n" else "\n"
 let output_line oc s = output_string oc s; output_string oc endline
 
 (* based on last modification date only.
-   Doesn't handle dependencies toward runtime things that might change 
+   Doesn't handle dependencies toward runtime things that might change
    incompatibly (DLLs, bytecode version, ...).
    ocamlscript -f can be used to force recompilation in these cases. *)
 let needs_recompile ?log = function
@@ -165,7 +165,7 @@ let process_directives lines =
   let style = ref `Ocaml in
   let ocaml_lines =
     List.map
-      (function 
+      (function
 	   / "#" blank* "locstyle" blank*
 	     (lower ['_'alnum*] as x) blank* ";;"? blank* eol / as s ->
 	     style := read_locstyle x;
@@ -206,7 +206,7 @@ let process_directives =
 (*
 let split_lines lines =
   let lines1, lines2 = split_list [] is_sep lines in
-  let pos1, header = 
+  let pos1, header =
     match lines1 with
 	/ "#!" / :: header -> (2, header)
       | _ -> (1, lines1) in
@@ -225,7 +225,7 @@ let split_lines lines =
     match lines1 with
         s :: header when test s -> 2, header
       | _ -> 1, lines1 in
-  let pos2 = List.length lines1 + 2 in 
+  let pos2 = List.length lines1 + 2 in
   (pos1, header, pos2, lines2)
 
 let get_dir file =
@@ -238,15 +238,15 @@ let write_header ~pos ~source ~source_option ~verbose ~prog_file lines =
   let extra_args =
     match !Opt.extra_args with
 	[] -> ""
-      | l -> 
+      | l ->
 	  sprintf "Ocamlscript.Common.extra_args := [ %s];;\n"
 	    (String.concat "; " (List.map (fun s -> sprintf "%S" s) l)) in
   let trash, script_dir =
     match source_option with
-	`Stdin 
+	`Stdin
       | `String _ -> (sprintf "Ocamlscript.Common.trash := \
                                %S :: !Ocamlscript.Common.trash;;\n"
-			bin, 
+			bin,
 			Sys.getcwd ())
       | `File script_name -> "", get_dir script_name in
 
@@ -267,7 +267,7 @@ open Ocamlscript;;
 open Utils;;
 #%i %S;;\n"
      pos source verbose script_dir extra_args trash pos source;
-  
+
   List.iter (output_line oc) lines;
 
   fprintf oc "\
@@ -289,7 +289,7 @@ let write_body ~pos ~source ~locstyle lines =
 module Text =
 struct
   exception Internal_exit
-    
+
   let iter_lines_of_channel f ic =
     try
       while true do
@@ -299,10 +299,10 @@ struct
 	f line
       done
     with Internal_exit -> ()
-      
+
   let iter_lines_of_file f file =
     let ic = open_in file in
-    try 
+    try
       iter_lines_of_channel f ic;
       close_in ic
     with exn ->
@@ -324,7 +324,7 @@ end
 let split_file =
   let newline = Str.regexp "\r?\n" in
   fun ?log source_option ->
-    let source, lines = 
+    let source, lines =
       match source_option with
 	  `Stdin -> "", Text.lines_of_channel stdin
 	| `String s -> "", (Str.split newline) s
@@ -332,13 +332,13 @@ let split_file =
 
     let pos1, unprocessed_header, pos2, body = split_lines lines in
     let header, locstyle = process_directives unprocessed_header in
-    
+
     let verbose = if log = None then "false" else "true" in
-    
+
     let prog_file =
       write_body ~pos:pos2 ~source ~locstyle body in
     let meta_file =
-      write_header 
+      write_header
 	~pos:pos1 ~source ~source_option ~verbose ~prog_file header in
     (meta_file, prog_file)
 
@@ -361,14 +361,14 @@ let option0 ?(refuse_input = false) x =
   let result = ref `Yes in
   (match x with
        "--" -> result := `Stop
-     | "-help" 
+     | "-help"
      | "--help" -> Opt.help := true
      | "-c" -> Opt.c := true
      | "-f" -> Opt.f := true
      | "-debug" -> Opt.debug := true
      | "-version" -> Opt.version := true
-     | "-" -> 
-	 if refuse_input then 
+     | "-" ->
+	 if refuse_input then
 	   failwith "option - is disabled in this context"
 	 else
 	   Opt.set "source" Opt.from `Stdin
@@ -380,8 +380,8 @@ let option1 ?(refuse_input = false) x y =
   (match x with
        "-o" -> Opt.set "executable name" Opt.o y
      | "-vm" -> Opt.set "virtual machine" Opt.vm y
-     | "-e" -> 
-	if refuse_input then 
+     | "-e" ->
+	if refuse_input then
 	  failwith "option -e is disabled in this context"
 	else
 	  Opt.set "source" Opt.from (`String y)
@@ -404,17 +404,17 @@ let other_arg x =
   Opt.extra_args := x :: !Opt.extra_args
 
 
-let process_ocamlscript_args ?refuse_input ?(accept_non_option = false) l = 
+let process_ocamlscript_args ?refuse_input ?(accept_non_option = false) l =
   let rec loop = function
-      x :: rest as l -> 
+      x :: rest as l ->
 	begin
 	  match option0 x with
 	      `Stop -> (None, true, rest)
 	    | `Yes -> loop rest
-	    | `No -> 
+	    | `No ->
 		match l with
 		    x :: y :: rest when option1 ?refuse_input x y -> loop rest
-		  | x :: rest -> 
+		  | x :: rest ->
 		      if start_option1 x then
 			(Some x, false, rest)
 		      else if optionx x then
@@ -440,8 +440,8 @@ let unquote s =
   Buffer.contents buf
 
 (*
-let tokenize_args = 
-  COLLECT '"' (([^'"']|"\"\"")* as x := unquote) '"' 
+let tokenize_args =
+  COLLECT '"' (([^'"']|"\"\"")* as x := unquote) '"'
         | ([^space '"']+ as x) -> x
 *)
 (*
@@ -451,8 +451,8 @@ let tokenize_args =
   let token = Str.regexp "\"\\([^\"]\\|\"\"\\)*\"\\|[^ \"]+" in
   fun s ->
     List.fold_right
-    (fun x accu -> 
-       match x with 
+    (fun x accu ->
+       match x with
 	   Str.Delim s ->
 	     (if s <> "" && s.[0] = '"' then
 		unquote (String.sub s 1 (String.length s - 2))
@@ -465,11 +465,11 @@ let guess_arg1 s =
   match tokenize_args s with
       [s'] when String.length s' >= 1 && s'.[0] <> '-' -> `Script_name
     | l ->
-	`Ocamlscript_args (process_ocamlscript_args 
+	`Ocamlscript_args (process_ocamlscript_args
 			     ~refuse_input:true
 			     ~accept_non_option:true l)
 
-(* name of Sys.argv.(0) in the final process (execution of the binary) 
+(* name of Sys.argv.(0) in the final process (execution of the binary)
    depending on where the source program comes from:
    - from a file: the name of the source file
    - from stdin:
@@ -487,17 +487,17 @@ let guess_arg1 s =
 let main () =
   let script_path_option, script_args =
     match Array.to_list Sys.argv with
-	ocamlscript :: (arg1 :: other_args as l) -> 
+	ocamlscript :: (arg1 :: other_args as l) ->
 	  (match guess_arg1 arg1 with
 	       `Script_name -> (`File (absolute arg1), l)
 	     | `Ocamlscript_args (opt1, stopped, hardcoded_script_args) ->
-		 let command_line_script_args = 
+		 let command_line_script_args =
 		   let continued_args =
 		     match opt1 with
 			 None -> other_args
 		       | Some o1 -> o1 :: other_args in
 		   if stopped then continued_args
-		   else 
+		   else
 		     let opt1', stopped', command_line_script_args =
 	               process_ocamlscript_args continued_args in
                      (match opt1' with
@@ -507,11 +507,11 @@ let main () =
 		     command_line_script_args in
 		 match !Opt.from with
 		     Some `Stdin ->
-		       (`Stdin, 
+		       (`Stdin,
 			"" ::
 			  (hardcoded_script_args @ command_line_script_args))
 		   | Some (`String s) ->
-		       (`String s, 
+		       (`String s,
 			"-e" ::
 			  (hardcoded_script_args @ command_line_script_args))
 		   | Some (`File s) -> assert false
@@ -521,11 +521,11 @@ let main () =
 			     Opt.set "source" Opt.from `Stdin;
 			     (`Stdin,
 			      "" :: hardcoded_script_args)
-			 | script_name :: l -> 
+			 | script_name :: l ->
 			     Opt.set "source" Opt.from (`File script_name);
-			     (`File (absolute script_name), 
+			     (`File (absolute script_name),
 			      script_name :: (hardcoded_script_args @ l)))
-      | [_] | [] -> 
+      | [_] | [] ->
 	  Opt.set "source" Opt.from `Stdin;
 	  (`Stdin, [""]) in
 
