@@ -126,17 +126,25 @@ let copy_file ?log ?(head = "") ?(tail = "") ?(force = false) src dst =
     let oc = open_out_bin dst in
     try 
       try
-	output_string oc head;
-	while true do
-	  output_char oc (input_char ic)
-	done
+        begin
+          output_string oc head;
+          while true do
+            output_char oc (input_char ic)
+	  done
+        end
       with End_of_file -> output_string oc tail
-    finally
-      close_out_noerr oc;
-      let perm = (stat src).st_perm in
-      chmod dst perm
-  finally
-    close_in_noerr ic
+    with exn ->
+      begin (* finally *)
+        close_out_noerr oc;
+        let perm = (stat src).st_perm in
+        chmod dst perm;
+        raise exn
+      end
+  with exn ->
+    begin (* finally *)
+      close_in_noerr ic;
+      raise exn
+    end
 
 let copy_files ?log ?force src dst l =
   List.iter 
@@ -187,4 +195,8 @@ let run ?log
     if status = 0 then
       copy_files ?log ~force:true dir base (match_files p.output output);
     status
-  finally remove ?log dir
+  with exn ->
+    begin (* finally *)
+      remove ?log dir;
+      raise exn
+    end

@@ -346,9 +346,13 @@ let split_file =
 let compile_script ?log source_option =
   let meta_name, prog_name = split_file ?log source_option in
   try Pipeline.run_command (Pipeline.command ["ocaml"; meta_name])
-  finally (* comment out for debugging: *)
-    Pipeline.remove meta_name;
-    Pipeline.remove prog_name
+  with exn ->
+    begin (* finally *)
+      (* comment out for debugging: *)
+      Pipeline.remove meta_name;
+      Pipeline.remove prog_name;
+      raise exn
+    end
 
 let absolute path =
   if Filename.is_relative path then
