@@ -1,5 +1,11 @@
 
-(executable
-  (public_name ocamlscript)
+(library
+  (name ocamlscript)
   (modules ocamlscript pipeline version)
   (libraries unix str))
+
+(executable
+  (name main)
+  (public_name ocamlscript)
+  (modules main)
+  (libraries ocamlscript))
