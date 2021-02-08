@@ -1,0 +1,15 @@
+opam-version: "2.0"
+synopsis: "Tool which compiles OCaml scripts into native code"
+maintainer: "martin@mjambon.com"
+authors: "Martin Jambon"
+homepage: "https://github.com/mjambon/ocamlscript"
+bug-reports: "https://github.com/mjambon/ocamlscript/issues"
+dev-repo: "git://github.com/mjambon/ocamlscript"
+depends: ["ocaml" "ocamlfind" "camlp4"]
+build: [make]
+install: [make "install"]
+remove: ["ocamlfind" "remove" "ocamlscript"]
+# url {
+#   src: "https://github.com/mjambon/ocamlscript/archive/XXX"
+#   checksum: "md5=XXX"
+# }
