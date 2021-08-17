@@ -1,5 +1,5 @@
 OCamlscript is a tool which compiles OCaml scripts into native code,
-thus combining mthe flexibility of scripts and the speed provided by
+thus combining the flexibility of scripts and the speed provided by
 ocamlopt.
 
 Examples are given in the `examples/` subdirectory.
