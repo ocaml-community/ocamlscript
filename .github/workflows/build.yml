@@ -1,0 +1,71 @@
+---
+name: Build
+on:
+  push:
+    branches:
+      - master  # forall push/merge in master
+  pull_request:
+    branches:
+      - "**"  # forall submitted Pull Requests
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+        ocaml-version:
+          - 4.08.x
+          - 4.09.x
+          - 4.10.x
+          - 4.11.x
+          - 4.12.x
+          - 4.13.x
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Prepare git
+        run: |
+          git config --global core.autocrlf false
+          git config --global init.defaultBranch master
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use OCaml ${{ matrix.ocaml-version }}
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: ${{ matrix.ocaml-version }}
+
+      - name: Install dependencies
+        run: opam install --deps-only .
+
+      - name: List installed packages
+        run: opam list
+
+      - name: Build locally
+        run: opam exec -- make
+
+      - name: Upload Linux/macOS artifact
+        if: runner.os != 'Windows'
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}-${{ matrix.ocaml-version }}-ocamlscript
+          path: ocamlscript
+
+      - name: Upload Windows artifact
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}-${{ matrix.ocaml-version }}-ocamlscript.exe
+          path: ocamlscript.exe
+
+      - name: Build, test, and install package
+        run: opam install -t .
+
+      - name: Uninstall package
+        run: opam uninstall .
