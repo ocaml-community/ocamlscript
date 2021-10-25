@@ -50,11 +50,19 @@ jobs:
       - name: Build locally
         run: opam exec -- make
 
-      - name: Upload the build artifact
+      - name: Upload Linux/macOS artifact
+        if: runner.os != 'Windows'
         uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.os }}-${{ matrix.ocaml-version }}-ocamlscript
           path: ocamlscript
+
+      - name: Upload Windows artifact
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os }}-${{ matrix.ocaml-version }}-ocamlscript.exe
+          path: ocamlscript.exe
 
       - name: Build, test, and install package
         run: opam install -t .
